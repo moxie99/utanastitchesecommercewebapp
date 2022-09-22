@@ -4,8 +4,23 @@ import Image from 'next/image'
 import Header from '../components/Header'
 import HeroSection from '../components/HeroSection'
 import { Tab } from '@headlessui/react'
+import { fetchCategories } from '../utils/fetchCategories'
+import { fetchProducts } from '../utils/fetchProducts'
+import Product from '../components/Product'
+import Cart from '../components/Cart'
 
-const Home: NextPage = () => {
+interface Props{ 
+  categories: Category[];
+  products: Product[];
+}
+const Home = ({categories, products}: Props) => {
+  
+  const showProducts = (category: number)=>{
+    return products.filter((product)=> product.category._ref === categories[category]._id)
+    .map((product)=> <Product product={product} key={product._id}/>);
+    //filter product by categoryPrincipal Web Applications Developer
+    // map the product
+  }
   return (
     <div className="">
       <Head>
@@ -15,15 +30,16 @@ const Home: NextPage = () => {
 
      <Header/>
       
+      <Cart/>
       <main className="relative -h-[200vh] bg-[#ffffff]">
         <HeroSection/>
-        <section className="relative z-40 mt-[100vh] min-h-screen bg-[#120302]">
+        <section className="relative z-40 mt-[100vh] min-h-screen bg-[#61181E]">
           <div className="py-20 space-y-10 ">
-            <h1 className="text-4xl font-medium tracking-wide text-center text-white md:text-5xl">
+            <h1 className="text-4xl font-medium tracking-wide text-center text-[#18615B] md:text-5xl">
             Available In Store
           </h1>
 
-          {/* <Tab.Group>
+          <Tab.Group>
             <Tab.List className="flex justify-center">
               {
                 categories.map((category) => (
@@ -34,8 +50,8 @@ const Home: NextPage = () => {
                   `whitespace-nowrap rounded-t-lg py-3 px-3 text-sm font-light
                   outline-none md:py-4 md:px-6 md:text-base ${
                     selected
-                    ? "borderGradient bg-[#140301] text-white"
-                    : "border-b-2 border-[#2b1d1c] text-[#2b1d1c]"
+                    ? "borderGradient bg-[#18615b] text-[#120302]"
+                    : "border-b-2 border-[#120302] text-[#d4af37]"
                   }
                   `
                 }
@@ -46,12 +62,12 @@ const Home: NextPage = () => {
               }
             </Tab.List>
             <Tab.Panels className="mx-auto pt-15 pb-25 max-w-fit sm:px-4">
-              <Tab.Panel className="tabPanel">{showProducts[0]}</Tab.Panel>
-              <Tab.Panel className="tabPanel">{showProducts[1]}</Tab.Panel>
-              <Tab.Panel className="tabPanel">{showProducts[2]}</Tab.Panel>
-              <Tab.Panel className="tabPanel">{showProducts[3]}</Tab.Panel>
+              <Tab.Panel className="tabPanel">{showProducts(0)}</Tab.Panel>
+              <Tab.Panel className="tabPanel">{showProducts(1)}</Tab.Panel>
+              <Tab.Panel className="tabPanel">{showProducts(2)}</Tab.Panel>
+              <Tab.Panel className="tabPanel">{showProducts(3)}</Tab.Panel>
             </Tab.Panels>
-          </Tab.Group> */}
+          </Tab.Group>
           </div>
         </section>
       </main>
@@ -61,10 +77,15 @@ const Home: NextPage = () => {
 
 export default Home
 
-
-export const getServerSideProps: GetServerSideProps = async ()=>{
-  // const categories = await fetchCategories();
+// fetching from server 
+export const getServerSideProps: GetServerSideProps<Props>= async ()=>{
+  const categories = await fetchCategories();
+  const products = await fetchProducts();
   return {
-    props:{},
+    props:{
+      categories,
+      products,
+    },
   }
 }
+
