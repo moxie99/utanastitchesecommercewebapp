@@ -6,6 +6,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      animation: {
+        spin: "spin 3s linear infinite",
+      },
       fontFamily: {
         body: ["Roboto", "sans-serif"],
       },
