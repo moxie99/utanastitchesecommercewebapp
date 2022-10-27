@@ -16,6 +16,7 @@ export const basketSlice = createSlice({
   reducers: {
     addToBasket:(state: BasketState, action: PayloadAction<Product>)=>  {
         state.items = [...state.items, action.payload]
+        console.log(action.payload.title);
         
     },
     removeFromBasket:(state: BasketState, action: PayloadAction<{id: string}>)=> {
